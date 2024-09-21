@@ -22,13 +22,9 @@ head(df$TotalMedicaidExpenditures)
 
 df$Time <- as.numeric(df$Time)
 
-# Correct date conversion (Time is just years, so we add "-01-01" to make it a full date)
 df_clean <- data.frame(ds = as.Date(paste0(df$Time, "-01-01"), format="%Y-%m-%d"), y = df$TotalMedicaidExpenditures)
-
-# Remove any rows with missing values
 df_clean <- na.omit(df_clean)
 
-# Fit the Prophet model
 model <- prophet(df_clean)
 
 future <- make_future_dataframe(model, periods=10, freq = 'year')
