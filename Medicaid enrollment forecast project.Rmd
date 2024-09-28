@@ -27,24 +27,23 @@ head(df)
 # I'll focus on data of New Jersey, filter the data
 nj_data <- df %>%
   filter(`State Name` == "New Jersey") %>%
-  select(`Report Date`, `Total Medicaid and CHIP Enrollment`)
-# Convert Report Date to Date type
+  select(`Report Date`, `Total Medicaid Enrollment`)
+
 nj_data$`Report Date` <- as.Date(nj_data$`Report Date`, format="%Y-%m-%d")
 nj_data <- nj_data %>%
-  rename(ds = `Report Date`, y = `Total Medicaid and CHIP Enrollment`)
+  rename(ds = `Report Date`, y = `Total Medicaid Enrollment`)
 ```
 
 ```{r}
-model <- prophet()
-model <- prophet(daily.seasonality = TRUE)
-
+model <- prophet(yearly.seasonality = TRUE, monthly.seasonality = FALSE, weekly.seasonality = FALSE, daily.seasonality = FALSE)
 model <- fit.prophet(model, nj_data)
-future <- make_future_dataframe(model, periods = 3650)
-
+future <- make_future_dataframe(model, periods = 10, freq = 'year')
 forecast <- predict(model, future)
+```
 
+```{r}
 plot(model, forecast)
 prophet_plot_components(model, forecast)
-tail(forecast[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')],n=3400)
+tail(forecast[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')],n=10)
 ```
 
