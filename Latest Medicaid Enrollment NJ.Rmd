@@ -1,0 +1,51 @@
+---
+title: "Enrollment Forecast trying"
+author: "Le Luo"
+date: "2024-10-11"
+output: pdf_document
+---
+
+```{r}
+library(prophet)
+library(readxl)
+library(tidyverse)
+library(dplyr)
+
+df <- read_xlsx("/Users/jio/Desktop/EMRTS intern/Latest NJ enrollment.xlsx")
+head(df)
+colnames(df)
+```
+```{r}
+head(df$Year)
+head(df$`Mean Medicaid Enrollment`)
+
+df$Year <- as.numeric(df$Year)
+
+df_Mean <- data.frame(ds = as.Date(paste0(df$Year, "-01-01"), format="%Y-%m-%d"), y = df$`Mean Medicaid Enrollment`)
+df_Mean <- na.omit(df_Mean)
+
+model <- prophet(df_Mean)
+
+future <- make_future_dataframe(model, periods=10, freq = 'year')
+
+forecast <- predict(model, future)
+plot(model, forecast)
+tail(forecast[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')], n=10)
+prophet_plot_components(model, forecast)
+```
+
+```{r}
+df$Year <- as.numeric(df$Year)
+
+df_median <- data.frame(ds = as.Date(paste0(df$Year, "-01-01"), format="%Y-%m-%d"), y = df$`Median Medicaid Enrollment`)
+df_median <- na.omit(df_median)
+
+model <- prophet(df_median)
+
+future <- make_future_dataframe(model, periods=10, freq = 'year')
+
+forecast <- predict(model, future)
+plot(model, forecast)
+tail(forecast[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')], n=10)
+prophet_plot_components(model, forecast)
+```
