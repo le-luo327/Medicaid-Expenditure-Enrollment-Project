@@ -1,0 +1,61 @@
+---
+title: "New York Enrollment&Expenditure forecast"
+author: "Le Luo"
+date: "2024-10-23"
+output: pdf_document
+---
+
+```{r}
+library(prophet)
+library(readxl)
+library(tidyverse)
+library(dplyr)
+
+df <- read_xlsx("/Users/jio/Desktop/EMRTS intern/NY enrollment data.xlsx")
+head(df)
+colnames(df)
+```
+```{r}
+head(df$Year)
+head(df$`MedicaidEnrollment`)
+
+df$Year <- as.numeric(df$Year)
+
+df_Mean <- data.frame(ds = as.Date(paste0(df$Year, "-01-01"), format="%Y-%m-%d"), y = df$MedicaidEnrollment)
+df_Mean <- na.omit(df_Mean)
+
+model <- prophet(df_Mean)
+
+future <- make_future_dataframe(model, periods=12, freq = 'year')
+
+forecast <- predict(model, future)
+plot(model, forecast)
+tail(forecast[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')], n=10)
+prophet_plot_components(model, forecast)
+```
+```{r}
+library(prophet)
+library(readxl)
+
+df <- read_xlsx("/Users/jio/Desktop/EMRTS intern/NY expenditure data.xlsx")
+head(df)
+colnames(df)
+```
+```{r}
+head(df$Year)
+head(df$Expenditure)
+
+df$Year <- as.numeric(df$Year)
+
+df_clean <- data.frame(ds = as.Date(paste0(df$Year, "-01-01"), format="%Y-%m-%d"), y = df$Expenditure)
+df_clean <- na.omit(df_clean)
+
+model <- prophet(df_clean)
+
+future <- make_future_dataframe(model, periods=11, freq = 'year')
+
+forecast <- predict(model, future)
+plot(model, forecast)
+tail(forecast[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')], n=10)
+prophet_plot_components(model, forecast)
+```

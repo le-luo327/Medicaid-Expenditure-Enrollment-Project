@@ -1,0 +1,81 @@
+---
+title: "Nationwide enrollment forecast"
+author: "Le Luo"
+date: "2024-10-23"
+output: pdf_document
+---
+
+```{r}
+library(readxl)
+library(dplyr)
+library(prophet)
+
+df <- read_xlsx("/Users/jio/Desktop/EMRTS intern/nationwide enrollment data.xlsx")
+head(df)
+colnames(df)
+```
+
+
+```{r}
+nationwide_enrollment <- df %>%
+  group_by(Year) %>%
+  summarize(total_enrollments = sum(CountEverEnrolled, na.rm = TRUE))
+
+nationwide_enrollment <- nationwide_enrollment %>%
+  mutate(ds = as.Date(paste0(Year, "-01-01"))) %>%
+  rename(y = total_enrollments) %>%
+  select(ds, y) 
+
+model_enrollments <- prophet(nationwide_enrollment)
+future_enrollments <- make_future_dataframe(model_enrollments, periods = 12, freq = "year")
+
+forecast_enrollments <- predict(model_enrollments, future_enrollments)
+print(tail(forecast_enrollments[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')]), n=10)
+
+plot(model_enrollments, forecast_enrollments) +
+  labs(title = "Forecasted Medicaid Enrollment Nationwide",
+       x = "Year",
+       y = "Total Medicaid Enrollment") +
+  theme_minimal()
+
+prophet_plot_components(model_enrollments, forecast_enrollments)
+
+```
+
+```{r}
+library(readxl)
+library(dplyr)
+library(prophet)
+
+df1 <- read_xlsx("/Users/jio/Desktop/EMRTS intern/nationwide expenditure data.xlsx")
+head(df1)
+colnames(df1)
+
+```
+
+
+```{r}
+nationwide_expenditure <- df1 %>%
+  group_by(Year) %>%
+  summarize(total_expenditure = sum(Expenditure, na.rm = TRUE))
+
+nationwide_expenditure <- nationwide_expenditure %>%
+  mutate(ds = as.Date(paste0(Year, "-01-01"))) %>%
+  rename(y = total_expenditure) %>%
+  select(ds, y) 
+
+model_expenditure <- prophet(nationwide_expenditure)
+future_expenditure <- make_future_dataframe(model_expenditure, periods = 11, freq = "year")
+
+forecast_expenditure <- predict(model_expenditure, future_expenditure)
+print(tail(forecast_expenditure[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')]), n=10)
+
+plot(model_expenditure, forecast_expenditure) +
+  labs(title = "Forecasted Medicaid Expenditure Nationwide",
+       x = "Year",
+       y = "Total Medicaid Expenditure") +
+  theme_minimal()
+
+prophet_plot_components(model_expenditure, forecast_expenditure)
+
+```
