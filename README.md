@@ -1,5 +1,5 @@
 ***********************************************************************
-DESCRIPTION: To forecast annual Medicaid enrollments and expenditures in New Jersey for the next ten years
+DESCRIPTION: To forecast annual Medicaid enrollments and expenditures in New Jersey, New York, and nationwide for the next ten years
 
 DEVELOPER: LE LUO
 
