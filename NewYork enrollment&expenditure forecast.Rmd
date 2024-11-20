@@ -15,6 +15,7 @@ df <- read_xlsx("/Users/jio/Desktop/EMRTS intern/NY enrollment data.xlsx")
 head(df)
 colnames(df)
 ```
+
 ```{r}
 head(df$Year)
 head(df$`MedicaidEnrollment`)
@@ -24,21 +25,22 @@ df$Year <- as.numeric(df$Year)
 df_Mean <- data.frame(ds = as.Date(paste0(df$Year, "-01-01"), format="%Y-%m-%d"), y = df$MedicaidEnrollment)
 df_Mean <- na.omit(df_Mean)
 
-model <- prophet(df_Mean)
+model_enrollment <- prophet(df_Mean)
 
-future <- make_future_dataframe(model, periods=12, freq = 'year')
+future_enrollment <- make_future_dataframe(model_enrollment, periods=12, freq = 'year')
 
-forecast <- predict(model, future)
-plot(model, forecast) + ggtitle("Medicaid Enrollment Forecast in New York")
-prophet_plot_components(model, forecast)
+forecast_enrollment <- predict(model_enrollment, future_enrollment)
+plot(model_enrollment, forecast_enrollment) + ggtitle("Medicaid Enrollment Forecast in New York")
+prophet_plot_components(model_enrollment, forecast_enrollment)
 
-forecast_result <- forecast[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')]
-colnames(forecast_result) <- c("Date", "Predicted_Value", "Lower_Bound", "Upper_Bound")
-forecast_result$Predicted_Value <- format(forecast_result$Predicted_Value, big.mark = ",", scientific = FALSE)
-forecast_result$Lower_Bound <- format(forecast_result$Lower_Bound, big.mark = ",", scientific = FALSE)
-forecast_result$Upper_Bound <- format(forecast_result$Upper_Bound, big.mark = ",", scientific = FALSE)
-tail(forecast_result, n = 10)
+forecast_result_enrollment <- forecast_enrollment[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')]
+colnames(forecast_result_enrollment) <- c("Date", "Predicted_Value", "Lower_Bound", "Upper_Bound")
+forecast_result_enrollment$Predicted_Value <- format(forecast_result_enrollment$Predicted_Value, big.mark = ",", scientific = FALSE)
+forecast_result_enrollment$Lower_Bound <- format(forecast_result_enrollment$Lower_Bound, big.mark = ",", scientific = FALSE)
+forecast_result_enrollment$Upper_Bound <- format(forecast_result_enrollment$Upper_Bound, big.mark = ",", scientific = FALSE)
+tail(forecast_result_enrollment, n = 10)
 ```
+
 ```{r}
 library(prophet)
 library(readxl)
@@ -47,6 +49,7 @@ df <- read_xlsx("/Users/jio/Desktop/EMRTS intern/NY expenditure data.xlsx")
 head(df)
 colnames(df)
 ```
+
 ```{r}
 head(df$Year)
 head(df$Expenditure)

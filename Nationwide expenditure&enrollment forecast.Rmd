@@ -19,10 +19,6 @@ colnames(df)
 ```{r}
 nationwide_enrollment <- df %>%
   group_by(Year) %>%
-  summarize(total_enrollments = sum(CountEverEnrolled, na.rm = TRUE))
-
-nationwide_enrollment <- df %>%
-  group_by(Year) %>%
   summarize(total_enrollments = sum(CountEverEnrolled, na.rm = TRUE)) %>%
   mutate(ds = as.Date(paste0(Year, "-01-01")), y = total_enrollments) %>%
   select(ds, y)
@@ -37,12 +33,12 @@ plot(model_enrollments, forecast_enrollments) +
   theme_minimal()
 
 prophet_plot_components(model_enrollments, forecast_enrollments)
-forecast_result <- forecast[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')]
-colnames(forecast_result) <- c("Date", "Predicted_Value", "Lower_Bound", "Upper_Bound")
-forecast_result$Predicted_Value <- format(forecast_result$Predicted_Value, big.mark = ",", scientific = FALSE)
-forecast_result$Lower_Bound <- format(forecast_result$Lower_Bound, big.mark = ",", scientific = FALSE)
-forecast_result$Upper_Bound <- format(forecast_result$Upper_Bound, big.mark = ",", scientific = FALSE)
-tail(forecast_result, n=10)
+forecast_result_enrollment <- forecast_enrollments[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')]
+colnames(forecast_result_enrollment) <- c("Date", "Predicted_Value", "Lower_Bound", "Upper_Bound")
+forecast_result_enrollment$Predicted_Value <- format(forecast_result_enrollment$Predicted_Value, big.mark = ",", scientific = FALSE)
+forecast_result_enrollment$Lower_Bound <- format(forecast_result_enrollment$Lower_Bound, big.mark = ",", scientific = FALSE)
+forecast_result_enrollment$Upper_Bound <- format(forecast_result_enrollment$Upper_Bound, big.mark = ",", scientific = FALSE)
+tail(forecast_result_enrollment, n=10)
 
 ```
 
@@ -61,16 +57,13 @@ colnames(df1)
 ```{r}
 nationwide_expenditure <- df1 %>%
   group_by(Year) %>%
-  summarize(total_expenditure = sum(Expenditure, na.rm = TRUE))
-
-nationwide_expenditure <- nationwide_expenditure %>%
+  summarize(total_expenditure = sum(Expenditure, na.rm = TRUE)) %>%
   mutate(ds = as.Date(paste0(Year, "-01-01"))) %>%
   rename(y = total_expenditure) %>%
   select(ds, y) 
 
 model_expenditure <- prophet(nationwide_expenditure)
 future_expenditure <- make_future_dataframe(model_expenditure, periods = 11, freq = "year")
-
 forecast_expenditure <- predict(model_expenditure, future_expenditure)
 plot(model_expenditure, forecast_expenditure) +
   labs(title = "Forecasted Medicaid Expenditure Nationwide",
@@ -79,11 +72,11 @@ plot(model_expenditure, forecast_expenditure) +
   theme_minimal()
 
 prophet_plot_components(model_expenditure, forecast_expenditure)
-forecast_result <- forecast[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')]
-colnames(forecast_result) <- c("Date", "Predicted_Value", "Lower_Bound", "Upper_Bound")
-forecast_result$Predicted_Value <- format(forecast_result$Predicted_Value, big.mark = ",", scientific = FALSE)
-forecast_result$Lower_Bound <- format(forecast_result$Lower_Bound, big.mark = ",", scientific = FALSE)
-forecast_result$Upper_Bound <- format(forecast_result$Upper_Bound, big.mark = ",", scientific = FALSE)
-tail(forecast_result, n=10)
+forecast_result_expenditure <- forecast_expenditure[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')]
+colnames(forecast_result_expenditure) <- c("Date", "Predicted_Value", "Lower_Bound", "Upper_Bound")
+forecast_result_expenditure$Predicted_Value <- format(forecast_result_expenditure$Predicted_Value, big.mark = ",", scientific = FALSE)
+forecast_result_expenditure$Lower_Bound <- format(forecast_result_expenditure$Lower_Bound, big.mark = ",", scientific = FALSE)
+forecast_result_expenditure$Upper_Bound <- format(forecast_result_expenditure$Upper_Bound, big.mark = ",", scientific = FALSE)
+tail(forecast_result_expenditure, n=10)
 
 ```
