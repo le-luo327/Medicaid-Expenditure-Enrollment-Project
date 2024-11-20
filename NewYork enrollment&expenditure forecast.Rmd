@@ -29,9 +29,15 @@ model <- prophet(df_Mean)
 future <- make_future_dataframe(model, periods=12, freq = 'year')
 
 forecast <- predict(model, future)
-plot(model, forecast)
-tail(forecast[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')], n=10)
+plot(model, forecast) + ggtitle("Medicaid Enrollment Forecast in New York")
 prophet_plot_components(model, forecast)
+
+forecast_result <- forecast[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')]
+colnames(forecast_result) <- c("Date", "Predicted_Value", "Lower_Bound", "Upper_Bound")
+forecast_result$Predicted_Value <- format(forecast_result$Predicted_Value, big.mark = ",", scientific = FALSE)
+forecast_result$Lower_Bound <- format(forecast_result$Lower_Bound, big.mark = ",", scientific = FALSE)
+forecast_result$Upper_Bound <- format(forecast_result$Upper_Bound, big.mark = ",", scientific = FALSE)
+tail(forecast_result, n = 10)
 ```
 ```{r}
 library(prophet)
@@ -55,7 +61,13 @@ model <- prophet(df_clean)
 future <- make_future_dataframe(model, periods=11, freq = 'year')
 
 forecast <- predict(model, future)
-plot(model, forecast)
-tail(forecast[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')], n=10)
+plot(model, forecast) + ggtitle("Medicaid Expenditure Forecast in New York")
 prophet_plot_components(model, forecast)
+
+forecast_result <- forecast[c('ds', 'yhat', 'yhat_lower', 'yhat_upper')]
+colnames(forecast_result) <- c("Date", "Predicted_Value", "Lower_Bound", "Upper_Bound")
+forecast_result$Predicted_Value <- format(forecast_result$Predicted_Value, big.mark = ",", scientific = FALSE)
+forecast_result$Lower_Bound <- format(forecast_result$Lower_Bound, big.mark = ",", scientific = FALSE)
+forecast_result$Upper_Bound <- format(forecast_result$Upper_Bound, big.mark = ",", scientific = FALSE)
+tail(forecast_result, n = 10)
 ```
