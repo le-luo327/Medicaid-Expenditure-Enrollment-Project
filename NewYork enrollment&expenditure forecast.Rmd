@@ -38,6 +38,10 @@ colnames(forecast_result_enrollment) <- c("Date", "Predicted_Value", "Lower_Boun
 forecast_result_enrollment$Predicted_Value <- format(forecast_result_enrollment$Predicted_Value, big.mark = ",", scientific = FALSE)
 forecast_result_enrollment$Lower_Bound <- format(forecast_result_enrollment$Lower_Bound, big.mark = ",", scientific = FALSE)
 forecast_result_enrollment$Upper_Bound <- format(forecast_result_enrollment$Upper_Bound, big.mark = ",", scientific = FALSE)
+
+forecast_result_enrollment$Predicted_Value <- as.numeric(gsub(",", "", forecast_result_enrollment$Predicted_Value))
+forecast_result_enrollment$Percentage_Increase <- c(NA, diff(forecast_result_enrollment$Predicted_Value) / 
+                                                        head(forecast_result_enrollment$Predicted_Value, -1) * 100)
 tail(forecast_result_enrollment, n = 10)
 ```
 
@@ -72,5 +76,9 @@ colnames(forecast_result) <- c("Date", "Predicted_Value", "Lower_Bound", "Upper_
 forecast_result$Predicted_Value <- format(forecast_result$Predicted_Value, big.mark = ",", scientific = FALSE)
 forecast_result$Lower_Bound <- format(forecast_result$Lower_Bound, big.mark = ",", scientific = FALSE)
 forecast_result$Upper_Bound <- format(forecast_result$Upper_Bound, big.mark = ",", scientific = FALSE)
+
+forecast_result$Predicted_Value <- as.numeric(gsub(",", "", forecast_result$Predicted_Value))
+forecast_result$Percentage_Increase <- c(NA, diff(forecast_result$Predicted_Value) / 
+                                                        head(forecast_result$Predicted_Value, -1) * 100)
 tail(forecast_result, n = 10)
 ```
